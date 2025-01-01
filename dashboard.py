@@ -1,43 +1,38 @@
 import streamlit as st
+import os
+import tempfile
+import crip
+import decript
 
-
-# Função de Criptografar
-def pagina_cript():
-    st.header('🤖 Criptografar', divider=True)
-
-
-
-# Função de Descriptografar
-def pagina_decript():
-    st.header('🤖 Descriptografar', divider=True)
-
-
+from keys import save_keys_to_file
 
 # Sidebar para navegação
-def sidebar():
+def pagination():
     # Usando st.radio para navegar entre as páginas
     pagina = st.selectbox('Escolha uma opção', ('Criptografar', 'Descriptografar'))
     if pagina == 'Criptografar':
-        password = st.text_input('Password: ')
-        if st.button('Criptografar'):
-            print(f'Criptografar: {password}')
+        st.header('🤖 Criptografar', divider=True)
+        message_input = st.text_input('Message: ')
+        password = st.text_input('Passowrd: ')
+        if message_input and password:
+            if st.button('Criptografar'):
+                if not os.path.exists('keys.bin'):
+                    save_keys_to_file(password)
+                message = message_input.encode('utf-8')
+                crip.criptography(message)
 
     if pagina == 'Descriptografar':
-        file = st.file_uploader('Upload File')
+        st.header('🤖 Descriptografar', divider=True)
+        file = st.file_uploader('Ainda em teste')
         if st.button('Descriptografar'):
-            print(f'Descriptografando o arquivo...')
-            print("Feito")
+            data_descripted = decript.decrypt()
+
+            st.text(data_descripted)
     return pagina
 
 
 def main():
-    with st.sidebar:
-        pagina = sidebar()
-
-    if pagina == 'Criptografar':
-        pagina_cript()  # Exibe a página de criptografia
-    elif pagina == 'Descriptografar':
-        pagina_decript()  # Exibe a página de descriptografia
+    pagination()
 
 
 if __name__ == '__main__':
